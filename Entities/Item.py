@@ -4,7 +4,7 @@ from classes.Maths import Vec2D
 
 class Item(Dashboard):
     def __init__(self, collection, screen, x, y):
-        super(Item, self).__init__("./img/font.png", 8, screen)
+        super().__init__("./img/font.png", 8, screen)
 
         self.item_pos = Vec2D(x, y)
         self.item_vel = Vec2D(0, 0)
@@ -12,7 +12,7 @@ class Item(Dashboard):
         self.coin_animation = copy(collection.get("coin-item").animation)
         self.sound_played = False
 
-    def spawnCoin(self, cam, sound, dashboard):
+    def spawnCoin(self, cam, dashboard):
         if not self.sound_played:
             #TODO: Increment point counter
             self.sound_played = True

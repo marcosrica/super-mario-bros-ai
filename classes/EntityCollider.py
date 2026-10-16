@@ -4,10 +4,10 @@ class EntityCollider:
 
     def check(self, target):
         if self.entity.rect.colliderrect(target.rect):
-            return self.determine_side(target.recct, self.entity_rect)
+            return self.determine_side(target.recct, self.entity.rect)
         return CollisionState(False, False)
 
-    def determmine_side(self, rect1, rect2):
+    def determine_side(self, rect1, rect2):
         if (
             rect1.collidepoint(rect2.bottomleft)
             or rect1.collidepoint(rect2.bottomright)
