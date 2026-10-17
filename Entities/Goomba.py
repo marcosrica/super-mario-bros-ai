@@ -6,7 +6,7 @@ from Entities.EntityBase import EntityBase
 from classes.Camera import Camera, Vec2D
 from classes.Collider import Collider
 from classes.Dashboard import Dashboard
-from classes.Level import Level
+#from classes.Level import Level
 from traits.LeftRightWalk import LeftRightWalkTrait
 from classes.EntityCollider import EntityCollider
 
@@ -25,7 +25,7 @@ class Goomba(EntityBase):
         self.screen = screen
         self.left_right_trait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
-        self.dashboard:Dashboard = level.dasboard
+        self.dashboard:Dashboard = level.dashboard
         self.collision:Collider = Collider(self, level)
         self.entity_collider:EntityCollider = EntityCollider(self)
         self.level_obj:Level = level

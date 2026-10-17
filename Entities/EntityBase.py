@@ -1,4 +1,5 @@
 import pygame as pg
+from classes.Camera import Camera
 from classes.Maths import Vec2D
 
 class EntityBase(object):
@@ -16,16 +17,19 @@ class EntityBase(object):
         self.on_ground = False
         self.obey_gravity = True
 
+        self.triggered = False
+
+
     def apply_gravity(self):
         if self.obey_gravity:
             self.vel.y += self.gravity
 
     def update_traits(self):
         for trait in self.traits.values():
-            try:
-                trait.update()
-            except AttributeError:
-                pass
+            #try:
+            trait.update()
+            #except AttributeError:
+            #    pass
 
     def get_pos_index(self):
         return Vec2D(self.rect.x // 32, self.rect.y // 32)

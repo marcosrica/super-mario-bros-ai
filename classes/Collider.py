@@ -22,7 +22,7 @@ class Collider:
         for row in rows:
             tiles = row[self.entity.get_pos_index().x: self.entity.get_pos_index().x + 2]
             for tile in tiles:
-                if (tile.rect is not None) and (self.entity.rect.colliderrect(tile.rect)):
+                if (tile.rect is not None) and (self.entity.rect.colliderect(tile.rect)):
                     if self.entity.vel.x > 0:
                         self.entity.rect.right = tile.rect.left
                         self.entity.vel.x = 0
@@ -32,7 +32,6 @@ class Collider:
 
     def check_y(self):
         self.entity.on_ground = False
-
         try:
             rows = [
                 self.level[self.entity.get_pos_index().y],
@@ -45,26 +44,23 @@ class Collider:
             except Exception:
                 self.entity.alive = None
             return
-
+    
         for row in rows:
             tiles = row[self.entity.get_pos_index().x : self.entity.get_pos_index().x + 2]
             for tile in tiles:
-                if tile.rect is not None:
-                   if self.entity.vel.y > 0:
+                if tile.rect is not None and self.entity.rect.colliderect(tile.rect):   # ★ add this
+                    if self.entity.vel.y > 0:
                         self.entity.on_ground = True
                         self.entity.rect.bottom = tile.rect.top
                         self.entity.vel.y = 0
-                       
-                        # reset jump on bottom
                         if self.entity.traits is not None:
                             if "JumpTrait" in self.entity.traits:
-                               self.entity.traits["JumpTrait"].reset()
+                                self.entity.traits["JumpTrait"].reset()
                             if "bounceTrait" in self.entity.traits:
                                 self.entity.traits["bounceTrait"].reset()
-
-                        if self.entity.vel.y < 0:
-                            self.entity.rect.top = tile.rect.bottom
-                            self.entity.vel.y = 0
+                    elif self.entity.vel.y < 0:                                       # ★ un-nest
+                        self.entity.rect.top = tile.rect.bottom
+                        self.entity.vel.y = 0
 
                             
     def right_level_border_reached(self):

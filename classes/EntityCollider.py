@@ -3,8 +3,8 @@ class EntityCollider:
         self.entity = entity
 
     def check(self, target):
-        if self.entity.rect.colliderrect(target.rect):
-            return self.determine_side(target.recct, self.entity.rect)
+        if self.entity.rect.colliderect(target.rect):
+            return self.determine_side(target.rect, self.entity.rect)
         return CollisionState(False, False)
 
     def determine_side(self, rect1, rect2):

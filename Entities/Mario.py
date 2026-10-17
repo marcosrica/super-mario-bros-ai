@@ -160,7 +160,7 @@ class Mario(EntityBase):
             self.invincibility_frames = 20
 
     def get_pos(self):
-        return self.camera.x + self.rect.y + self.rect.y
+        return self.camera.x + self.rect.x, self.rect.y
 
     def set_pos(self, x, y):
         self.rect.x = x

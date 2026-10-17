@@ -8,18 +8,20 @@ class JumpTrait:
 
     def jump(self, jumping):
         if jumping:
-            if self.entity.onGround:
-                self.entity.sound.play_sfx(self.entity.sound.jump)
+            if self.entity.on_ground:
                 self.entity.vel.y = self.verticalSpeed
                 self.entity.inAir = True
                 self.initalHeight = self.entity.rect.y
-                self.entity.inJump = True
+                self.entity.in_jump = True
                 self.entity.obeyGravity = False  # always reach maximum height
 
-        if self.entity.inJump:
+        if self.entity.in_jump:
             if (self.initalHeight-self.entity.rect.y) >= self.deaccelerationHeight or self.entity.vel.y == 0:
-                self.entity.inJump = False
+                self.entity.in_jump = False
                 self.entity.obeyGravity = True
 
     def reset(self):
         self.entity.inAir = False
+
+    def update(self):
+        pass

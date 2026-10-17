@@ -3,6 +3,7 @@ from numpy import tile
 import pygame
 
 from Entities.EntityBase import EntityBase
+from classes.Camera import Camera
 from classes.Sprites import Sprites
 from classes.Tile import Tile
 from Entities.Coin import Coin
@@ -11,7 +12,7 @@ from Entities.Goomba import Goomba
 from Entities.Mushroom import RedMushroom
 from Entities.Koopa import Koopa
 from Entities.CoinBox import CoinBox
-from Entities.RandomBox import Camera, RandomBox
+from Entities.RandomBox import RandomBox
 
 class Level:
     def __init__(self, screen, dashboard):
@@ -22,6 +23,9 @@ class Level:
         self.level_length = 0
         self.entity_list:list[EntityBase] = []
 
+        self.points = 0
+        self.coins = 0
+
     def load_level(self, level_name):
         with open(f"./levels/{level_name}.json") as jsonData:
             data = json.load(jsonData)
@@ -31,14 +35,22 @@ class Level:
             self.level_length = data["length"]
 
     def load_entities(self, data):
+        print(data)
         try:
             [self.add_coin_box(x, y) for x, y in data["level"]["entities"]["CoinBox"]]
+            print("coin boxes added")
             [self.add_goomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]
+            print("goombas added")
             [self.add_koopa(x, y) for x, y in data["level"]["entities"]["Koopa"]]
+            print("koopas added")
             [self.add_coin(x, y) for x, y in data["level"]["entities"]["coin"]]
+            print("coins added")
             [self.add_coin_brick(x, y) for x, y in data["level"]["entities"]["coinBrick"]]
+            print("coin bricks added")
             [self.add_random_box(x, y, item) for x, y, item in data["level"]["entities"]["RandomBox"]]
+            print("random boxes added")
         except Exception:
+            print("except called")
             # if no entities in Level
             pass
 
@@ -76,29 +88,30 @@ class Level:
                     pygame.Rect(x * 32, y * 32, 32, 32),
                 )
 
-    def update_entities(self, camera:Camera):
-        for entity in self.entity_list:
+    def update_entities(self, camera: Camera):
+        for entity in list(self.entity_list):   # iterate over a copy
             entity.update(camera)
-            if entity.alive is None:
-                self.entity_list.remove(entity)
+        self.entity_list = [e for e in self.entity_list if e.alive is not None]
 
     def draw_level(self, camera:Camera):
         try:
             for y in range(0, 15):
                 for x in range(0-int(camera.pos.x + 1), 20-int(camera.pos.x-1)):
-                    if self.level[y][x].sprite is not None and self.level[y][x].sprite.redrawBackground:
-                        self.screen.blit(
-                            self.sprites.spriteCollection.get("sky").image,
-                            ((x + camera.pos.x) * 32, y*32)
+                    if self.level[y][x].sprite is not None:
+                        if self.level[y][x].sprite.redraw_background:
+                            self.screen.blit(
+                                self.sprites.spriteCollection.get("sky").image,
+                                ((x + camera.pos.x) * 32, y*32)
+                            )
+
+                        self.level[y][x].sprite.drawSprite(
+                            x + camera.pos.x, y, self.screen
                         )
-
-                    self.level[y][x].sprite.drawSprite(
-                        x + camera.pos.x, y, self.screen
-                    )
-
-            self.update_entities(camera)
         except IndexError:
             return
+
+        
+        self.update_entities(camera)
         
     def add_cloud_sprite(self, x, y):
         try:
@@ -129,7 +142,7 @@ class Level:
                     pygame.Rect(x*32, (y+i)*32, 32, 32)
                 )
                 self.level[y+i][x+1] = Tile(
-                    self.sprites.spriteCollection.get("pipe2L"),
+                    self.sprites.spriteCollection.get("pipe2R"),
                     pygame.Rect((x+1)*32, (y+i)*32, 32, 32)
                 )
         except IndexError:
@@ -151,7 +164,6 @@ class Level:
                 self.sprites.spriteCollection,
                 x,
                 y,
-                self.sound,
                 self.dashboard
             )
         )
@@ -186,6 +198,7 @@ class Level:
         self.entity_list.append(Coin(self.screen, self.sprites.spriteCollection, x, y))
 
     def add_goomba(self, x, y):
+        print("adding goomba on ", x, ", ", y)
         self.entity_list.append(
             Goomba(self.screen, self.sprites.spriteCollection, x, y, self)
         )

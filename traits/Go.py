@@ -33,7 +33,7 @@ class GoTrait:
                 if self.entity.vel.x > -self.maxVel:
                     self.entity.vel.x += self.accelVel * self.heading
 
-            if not self.entity.inAir:
+            if not self.entity.in_air:
                 self.animation.update()
             else:
                 self.animation.inAir()
@@ -45,11 +45,11 @@ class GoTrait:
                 self.entity.vel.x += self.decelVel
             if int(self.entity.vel.x) == 0:
                 self.entity.vel.x = 0
-                if self.entity.inAir:
+                if self.entity.in_air:
                     self.animation.inAir()
                 else:
                     self.animation.idle()
-        if (self.entity.invincibilityFrames//2) % 2 == 0:
+        if (self.entity.invincibility_frames//2) % 2 == 0:
             self.drawEntity()
 
     def updateAnimation(self, animation):
@@ -58,8 +58,8 @@ class GoTrait:
 
     def drawEntity(self):
         if self.heading == 1:
-            self.screen.blit(self.animation.image, self.entity.getPos())
+            self.screen.blit(self.animation.image, self.entity.get_pos())
         elif self.heading == -1:
             self.screen.blit(
-                flip(self.animation.image, True, False), self.entity.getPos()
+                flip(self.animation.image, True, False), self.entity.get_pos()
             )

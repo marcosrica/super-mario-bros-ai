@@ -6,7 +6,7 @@ from classes.Camera import Camera
 from classes.Collider import Collider
 from classes.Dashboard import Dashboard
 from classes.EntityCollider import EntityCollider
-from classes.Level import Level
+#from classes.Level import Level
 from traits.LeftRightWalk import LeftRightWalkTrait
 
 

@@ -5,7 +5,7 @@ from Entities.Item import Item
 from classes.Animation import Animation
 from classes.Camera import Camera
 from classes.Dashboard import Dashboard
-from classes.Level import Level
+#from classes.Level import Level
 
 class RandomBox(EntityBase):
     def __init__(self, screen, sprite_collection, x, y, item:Item, dashboard:Dashboard, level:Level, gravity=0):
@@ -28,7 +28,7 @@ class RandomBox(EntityBase):
         else:
             self.animation.image = self.sprite_collection.get("empty").image
             if self.item == 'RedMushroom':
-                self.level.add_red_mushroom(self.rect.y//32 - 1, self.rect.x//32)
+                self.level.add_red_mushroom(self.rect.x//32, self.rect.y//32 - 1)
             self.item = None
 
             if self.time < self.max_time:

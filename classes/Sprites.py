@@ -54,13 +54,13 @@ class Sprites:
                                     image["x"],
                                     image["y"],
                                     image["scale"],
-                                    colorkey=sprite["colorKey"],
+                                    color_key=sprite["colorKey"],
                                 )
                             )
                         dic[sprite["name"]] = Sprite(
                             None,
                             None,
-                            animation=Animation(images, deltaTime=sprite["deltaTime"]),
+                            animation=Animation(images, delta_time=sprite["deltaTime"]),
                         )
                     resDict.update(dic)
                     continue
@@ -82,8 +82,8 @@ class Sprites:
                                 sprite["scalefactor"],
                                 colorkey,
                                 True,
-                                xTileSize=xSize,
-                                yTileSize=ySize,
+                                x_tile_size=xSize,
+                                y_tile_size=ySize,
                             ),
                             sprite["collision"],
                         )

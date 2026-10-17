@@ -19,6 +19,6 @@ class LeftRightWalkTrait:
 
     def moveEntity(self):
         self.entity.rect.y += self.entity.vel.y
-        self.collDetection.checkY()
+        self.collDetection.check_y()
         self.entity.rect.x += self.entity.vel.x
-        self.collDetection.checkX()
+        self.collDetection.check_x()

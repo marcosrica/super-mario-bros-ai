@@ -5,7 +5,7 @@ from classes.Camera import Camera
 from classes.Collider import Collider
 from classes.Dashboard import Dashboard
 from classes.EntityCollider import CollisionState, EntityCollider
-from classes.Level import Level
+#from classes.Level import Level
 from classes.Maths import Vec2D
 from Entities.EntityBase import EntityBase
 from traits.LeftRightWalk import LeftRightWalkTrait
