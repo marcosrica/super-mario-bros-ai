@@ -7,11 +7,15 @@ from classes.Level import Level
 class Wrapper:
     def __init__(self, level_route, draw:bool, frame_rate):
         windowSize = 640, 480
-        self.to_draw = draw
-        self.level_route = level_route
         pygame.mixer.pre_init(44100, -16, 2, 4096)
         pygame.init()
-        self.screen = pygame.display.set_mode(windowSize)
+        self.to_draw = draw
+        if self.to_draw:
+            self.screen = pygame.display.set_mode(windowSize)
+        else:
+            self.screen = None
+        
+        self.level_route = level_route
         self.max_frame_rate = frame_rate
         self.dashboard = Dashboard("./img/font.png", 8, self.screen, draw)
         self.level = Level(self.screen, self.dashboard, draw)
@@ -46,11 +50,11 @@ class Wrapper:
             self.level.update(self.to_draw, self.mario.camera)
             self.dashboard.update(self.to_draw, self.level.coins, self.level.points, 100)
             self.mario.update(self.to_draw)
-            pygame.display.update()
             self.clock.tick(self.max_frame_rate)
-
-            if self.mario.get_pos()[0] > self.max_pos:
-                self.max_pos = self.mario.get_pos()[0]
+            self.max_pos = max(self.max_pos, self.mario.get_pos()[0])
+            
+            if self.to_draw:
+                pygame.display.update()
 
         return self.mario.restart
         
