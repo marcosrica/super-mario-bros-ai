@@ -30,6 +30,8 @@ def main():
         #Running a generation
         print()
         print(f"--- Running generation number {generation_count} ---")
+        total = 0
+        
         for i in range(population_count):
             #First set the model
             enviroments[i].set_model(models[i])
@@ -43,15 +45,20 @@ def main():
 
             #Calculating and saving the score
             score = evaluate(mario_res, level_res, max_res)
+            total = total + score
             models[i].set_score(score)
-            print(f"Mario nº{i} of generation {generation_count} scored {score}")
 
             #Cleaning up the enviroment
             enviroments[i].reset_enviroment()
 
         #Sorting the models based on the results
         models = sorted(models, key=attrgetter("score"), reverse=True)
-        print(models)
+
+        #printing statitics about the generation
+        print(f"Total amount of genes for generation: {models[0].genes_count}; mutating from gene {models[0].start_mutations}")
+        print(f"Average score of the generation: {total / population_count}")
+        print(f"Maximun score of the generation: {models[0].score}")
+        print(f"Minimun score of the generation: {models[len(models)-1].score}")
 
         #Combining
         print(f"Combining the results of generation {generation_count}")
