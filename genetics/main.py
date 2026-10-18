@@ -9,8 +9,9 @@ import numpy as np
 def main():
     level_name = "./level1-2"
     draw = True
-    frames = 60
-    gene_count = 1000
+    frames = 10000
+    gene_count = 10
+    gene_increment = 10
     mutation_chance = 0.1
     
     population_count = 100
@@ -56,8 +57,17 @@ def main():
         print(f"Combining the results of generation {generation_count}")
         models = combine(models)
 
+        #Checking if we need to save
         if generation_count % save_every:
            save_generation("./genetics/save.npy", models) 
+
+        #Checking if genes should be expanded
+        index = int((2 * population_count) / 3)
+        if models[0].score == models[index].score:
+            #Genomes have gotten stuck. Expanding
+            print("Generation is stuck. Expanding genome")
+            expand_generation(models, gene_increment)
+            
 
         generation_count = generation_count + 1
 
@@ -118,3 +128,7 @@ def load_generation(route, population: list[Genes]):
             population[i].genome[k] = arr[i][k]
 
     return population
+
+def expand_generation(population: list[Genes], expansion):
+    for i in range(len(population)):
+        population[i].expand_genome(expansion)

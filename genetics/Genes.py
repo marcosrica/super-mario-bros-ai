@@ -12,6 +12,7 @@ class Genes(PlayerWrapper):
         self.genome = np.zeros(genes_count)
         self.options = [0, 1, 2, 3, 4]
         self.score = 0
+        self.start_mutations:int = 0
 
         for i in range(genes_count):
             self.randomize_gene(i)
@@ -28,7 +29,7 @@ class Genes(PlayerWrapper):
 
     def set_genes(self, new_genes):
         for i in range(self.genes_count):
-            if rd.random() < self.mutation_range:
+            if (i > self.start_mutations) and (rd.random() < self.mutation_range):
                 self.randomize_gene(i)
             else:
                 self.genome[i] = new_genes[i]
@@ -45,4 +46,12 @@ class Genes(PlayerWrapper):
 
     def moves_left(self):
         return (self.genes_count - self.counter) != 0
-    
+
+    def expand_genome(self, extra_slots:int):
+        self.genome = np.concatenate([self.genome, np.zeros(extra_slots, dtype=self.genome[0].dtype)])
+        self.start_mutations = self.genes_count
+
+        for i in range(self.genes_count, self.genes_count + extra_slots):
+            self.randomize_gene(i)
+
+        self.genes_count += extra_slots
