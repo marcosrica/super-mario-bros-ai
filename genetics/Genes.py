@@ -11,9 +11,16 @@ class Genes(PlayerWrapper):
         self.genes_count = genes_count
         self.genome = np.zeros(genes_count)
         self.options = [0, 1, 2, 3, 4]
+        self.score = 0
 
         for i in range(genes_count):
             self.randomize_gene(i)
+
+    def __repr__(self):
+        return f"Mario(score: {self.score})"
+
+    def set_score(self, new_score):
+        self.score = new_score
 
     def randomize_gene(self, gene_pos):
         self.genome[gene_pos] = rd.choice(self.options)

@@ -2,7 +2,7 @@ from genetics.main import main as main_genetics
 import sys
 
 def main():
-    try:
+    #try:
         argument = sys.argv[1]
         match argument:
             case "help":
@@ -17,10 +17,10 @@ def main():
             case "genetic":
                 main_genetics()
                 
-    except IndexError:
-        print("Error running the code. Expected one argument. Printing help...")
-        print()
-        print_help()
+    #except IndexError:
+    #    print("Error running the code. Expected one argument. Printing help...")
+    #    print()
+    #    print_help()
 
 def print_help():
     print()

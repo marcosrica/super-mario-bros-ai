@@ -41,7 +41,6 @@ class Level:
         self.dashboard = new_dashboard
 
     def load_entities(self, data):
-        print(data)
         try:
             [self.add_coin_box(x, y) for x, y in data["level"]["entities"]["CoinBox"]]
             print("coin boxes added")
@@ -56,8 +55,8 @@ class Level:
             [self.add_random_box(x, y, item) for x, y, item in data["level"]["entities"]["RandomBox"]]
             print("random boxes added")
         except Exception:
-            print("except called")
             # if no entities in Level
+            pass
 
     def load_layers(self, data):
             layers = []
