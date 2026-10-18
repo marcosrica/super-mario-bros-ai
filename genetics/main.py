@@ -4,23 +4,30 @@ from Entities.Mario import Mario
 from classes.Level import Level
 from classes.Wrapper import Wrapper
 from genetics.Genes import Genes
-
+import numpy as np
 
 def main():
     level_name = "./level1-2"
-    draw = False
-    frames = 1000
+    draw = True
+    frames = 60
     gene_count = 1000
     mutation_chance = 0.1
     
-    population_count = 4
+    population_count = 100
     generation_count = 1
+    save_every = 5
     
     enviroments, models = make_initial_generation(population_count, level_name, draw, frames, gene_count, mutation_chance)
-    print(f"There are {len(enviroments)} marios")
 
-    while generation_count == 1:
+    try:
+        models = load_generation("./genetics/save.npy", models)
+        print("Resuming saved generation")
+    except Exception:
+        print("Could not retrieve any previous generation. Starting from scratch")
+        
+    while True:
         #Running a generation
+        print()
         print(f"--- Running generation number {generation_count} ---")
         for i in range(population_count):
             #First set the model
@@ -44,6 +51,13 @@ def main():
         #Sorting the models based on the results
         models = sorted(models, key=attrgetter("score"), reverse=True)
         print(models)
+
+        #Combining
+        print(f"Combining the results of generation {generation_count}")
+        models = combine(models)
+
+        if generation_count % save_every:
+           save_generation("./genetics/save.npy", models) 
 
         generation_count = generation_count + 1
 
@@ -81,5 +95,25 @@ def evaluate(mario:Mario, level:Level, max_pos:int):
     return score
 
 def combine(models:list[Genes]):
-    pass
+    #Removing the worst half of the last generation
+    count = len(models)
+    for j in range(int(count/2)):
+        models[j].reset()
     
+    for j in range(int(count/2), count):
+        models[j].set_genes(models[j-int(count/2)].get_genes())
+        models[j].reset()
+
+    return models
+
+def save_generation(route, population: list[Genes]):
+    arr = np.stack([m.get_genes() for m in population])
+    np.save(route, arr)
+
+def load_generation(route, population: list[Genes]):
+    arr = np.load("./genetics/save.npy")
+    for i in range(len(arr)):
+        for k in range(len(arr[0])):
+            population[i].genome[k] = arr[i][k]
+
+    return population

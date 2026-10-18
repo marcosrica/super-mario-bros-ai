@@ -16,8 +16,22 @@ class Genes(PlayerWrapper):
         for i in range(genes_count):
             self.randomize_gene(i)
 
+    def reset(self):
+        self.counter = 0
+        self.score = 0
+
     def __repr__(self):
         return f"Mario(score: {self.score})"
+
+    def get_genes(self):
+        return self.genome
+
+    def set_genes(self, new_genes):
+        for i in range(self.genes_count):
+            if rd.random() < self.mutation_range:
+                self.randomize_gene(i)
+            else:
+                self.genome[i] = new_genes[i]
 
     def set_score(self, new_score):
         self.score = new_score
