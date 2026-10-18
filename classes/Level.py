@@ -13,6 +13,7 @@ from Entities.Mushroom import RedMushroom
 from Entities.Koopa import Koopa
 from Entities.CoinBox import CoinBox
 from Entities.RandomBox import RandomBox
+from classes.Dashboard import Dashboard
 
 class Level:
     def __init__(self, screen, dashboard, draw:bool):
@@ -36,9 +37,12 @@ class Level:
             self.load_entities(data)
             self.level_length = data["length"]
 
+    def set_dashboard(self, new_dashboard:Dashboard):
+        self.dashboard = new_dashboard
+
     def load_entities(self, data):
-            print(data)
-        #try:
+        print(data)
+        try:
             [self.add_coin_box(x, y) for x, y in data["level"]["entities"]["CoinBox"]]
             print("coin boxes added")
             [self.add_goomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]
@@ -51,10 +55,9 @@ class Level:
             print("coin bricks added")
             [self.add_random_box(x, y, item) for x, y, item in data["level"]["entities"]["RandomBox"]]
             print("random boxes added")
-        #except Exception:
-        #    print("except called")
-        #    # if no entities in Level
-        #    pass
+        except Exception:
+            print("except called")
+            # if no entities in Level
 
     def load_layers(self, data):
             layers = []

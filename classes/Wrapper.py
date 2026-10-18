@@ -8,10 +8,11 @@ class Wrapper:
     def __init__(self, level_route, draw:bool, frame_rate):
         windowSize = 640, 480
         self.to_draw = draw
+        self.level_route = level_route
         pygame.mixer.pre_init(44100, -16, 2, 4096)
         pygame.init()
         self.screen = pygame.display.set_mode(windowSize)
-        self.max_frame_rate = 60
+        self.max_frame_rate = frame_rate
         self.dashboard = Dashboard("./img/font.png", 8, self.screen, draw)
         self.level = Level(self.screen, self.dashboard, draw)
         self.level.load_level(level_route)
@@ -27,6 +28,11 @@ class Wrapper:
     def get_state(self):
         return (self.mario, self.level)
 
+    def reset_enviroment(self):
+        self.level.set_dashboard(Dashboard("./img/font.png", 8, self.screen, self.to_draw))
+        self.level.load_level(self.level_route)
+        self.mario = Mario(0, 0, self.level, self.screen, self.dashboard)
+
     def set_model(self, model:PlayerWrapper):
         self.model = model        
 
@@ -40,7 +46,6 @@ class Wrapper:
             self.level.update(self.to_draw, self.mario.camera)
             self.dashboard.update(self.to_draw, self.level.coins, self.level.points, 100)
             self.mario.update(self.to_draw)
-            print("Mario is on position: ", self.mario.get_pos())
             pygame.display.update()
             self.clock.tick(self.max_frame_rate)
 
