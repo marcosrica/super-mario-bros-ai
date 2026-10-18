@@ -7,3 +7,6 @@ class PlayerWrapper:
 
     def moves_left(self):
         return False
+
+    def calculate_score(self):
+        return 0

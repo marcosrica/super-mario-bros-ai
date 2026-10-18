@@ -12,12 +12,17 @@ class Wrapper:
         pygame.init()
         self.screen = pygame.display.set_mode(windowSize)
         self.max_frame_rate = 60
-        self.dashboard = Dashboard("../img/font.png", 8, self.screen, draw)
+        self.dashboard = Dashboard("./img/font.png", 8, self.screen, draw)
         self.level = Level(self.screen, self.dashboard, draw)
         self.level.load_level(level_route)
         self.mario: Mario = Mario(0, 0, self.level, self.screen, self.dashboard)
         self.model:PlayerWrapper = PlayerWrapper()
         self.clock = pygame.time.Clock()
+
+        self.max_pos = 0
+
+    def get_max_mario_pos(self):
+        return self.max_pos
 
     def get_state(self):
         return (self.mario, self.level)
@@ -26,6 +31,8 @@ class Wrapper:
         self.model = model        
 
     def simulate(self):
+        self.max_pos = 0
+        
         while not self.mario.restart and self.model.moves_left():
             #pygame.display.set_caption("Super Mario running with {:d} FPS".format(int(clock.get_fps())))
             movement = self.model.make_move()
@@ -36,6 +43,9 @@ class Wrapper:
             print("Mario is on position: ", self.mario.get_pos())
             pygame.display.update()
             self.clock.tick(self.max_frame_rate)
+
+            if self.mario.get_pos()[0] > self.max_pos:
+                self.max_pos = self.mario.get_pos()[0]
 
         return self.mario.restart
         
