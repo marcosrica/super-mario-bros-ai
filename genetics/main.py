@@ -78,8 +78,9 @@ def evaluate(mario:Mario, level:Level, max_pos:int):
     #Rewarding first for how far it went
     score += mario.get_pos()[0]
 
-    #Then for the maximun length it has ever reached (with a penalisation)
-    score += (max_pos / 4)
+    #Then penalise individuals who have gotten really far, but then returned
+    difference = max_pos - score
+    score -= (2 * difference)
 
     #Then for the amounts of points scored
     score += level.points
