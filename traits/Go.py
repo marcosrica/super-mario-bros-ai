@@ -14,7 +14,7 @@ class GoTrait:
         self.camera = camera
         self.entity = ent
 
-    def update(self):
+    def update(self, draw:bool):
         if self.boost:
             self.maxVel = 5.0
             self.animation.deltaTime = 4
@@ -49,12 +49,12 @@ class GoTrait:
                     self.animation.inAir()
                 else:
                     self.animation.idle()
-        if (self.entity.invincibility_frames//2) % 2 == 0:
+        if (self.entity.invincibility_frames//2) % 2 == 0 and draw:
             self.drawEntity()
 
     def updateAnimation(self, animation):
         self.animation = animation
-        self.update()
+        self.update(True)
 
     def drawEntity(self):
         if self.heading == 1:

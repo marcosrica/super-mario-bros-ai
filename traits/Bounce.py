@@ -4,7 +4,7 @@ class bounceTrait:
         self.jump = False
         self.entity = entity
 
-    def update(self):
+    def update(self, draw):
         if self.jump:
             self.entity.vel.y = 0
             self.entity.vel.y -= self.vel

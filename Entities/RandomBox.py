@@ -22,7 +22,7 @@ class RandomBox(EntityBase):
         self.item = item
         self.level = level
 
-    def update(self, camera:Camera):
+    def update(self, draw:bool, camera:Camera):
         if self.alive and not self.triggered:
             self.animation.update()
         else:
@@ -38,6 +38,7 @@ class RandomBox(EntityBase):
                 self.time += 1
                 self.rect.y += self.vel
 
-        self.screen.blit(self.sprite_collection.get("sky").image, (self.rect.x + camera.x, self.rect.y + 2))
-        self.screen.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y - 1))
+        if draw:
+            self.screen.blit(self.sprite_collection.get("sky").image, (self.rect.x + camera.x, self.rect.y + 2))
+            self.screen.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y - 1))
                 

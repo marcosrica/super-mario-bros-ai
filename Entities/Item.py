@@ -3,8 +3,8 @@ from classes.Dashboard import Dashboard
 from classes.Maths import Vec2D
 
 class Item(Dashboard):
-    def __init__(self, collection, screen, x, y):
-        super().__init__("./img/font.png", 8, screen)
+    def __init__(self, collection, screen, x, y, draw:bool):
+        super().__init__("./img/font.png", 8, screen, draw)
 
         self.item_pos = Vec2D(x, y)
         self.item_vel = Vec2D(0, 0)

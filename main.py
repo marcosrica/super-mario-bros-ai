@@ -10,12 +10,14 @@ windowSize = 640, 480
 
 
 def main():
+    draw = True
+    
     pygame.mixer.pre_init(44100, -16, 2, 4096)
     pygame.init()
     screen = pygame.display.set_mode(windowSize)
     max_frame_rate = 60
-    dashboard = Dashboard("./img/font.png", 8, screen)
-    level = Level(screen, dashboard)
+    dashboard = Dashboard("./img/font.png", 8, screen, draw)
+    level = Level(screen, dashboard, draw)
     level.load_level("level1-1")
 
     #while not menu.start:
@@ -29,9 +31,10 @@ def main():
         #pygame.display.set_caption("Super Mario running with {:d} FPS".format(int(clock.get_fps())))
         
         mario1.move(random.choice(options))
-        level.draw_level(mario1.camera)
-        dashboard.update(level.coins, level.points, 100)
-        mario1.update()
+        level.update(draw, mario1.camera)
+        dashboard.update(draw, level.coins, level.points, 100)
+        mario1.update(draw)
+        print("Mario is on position: ", mario1.get_pos())
         pygame.display.update()
         clock.tick(max_frame_rate)
     return 'restart'

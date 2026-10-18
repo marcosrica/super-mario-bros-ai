@@ -31,10 +31,11 @@ class Goomba(EntityBase):
         self.level_obj:Level = level
         self.text_pos:Vec2D = Vec2D(0, 0)
 
-    def update(self, camera:Camera):
+    def update(self, draw:bool, camera:Camera):
         if self.alive:
             self.apply_gravity()
-            self.draw_goomba(camera)
+            if draw:
+                self.draw_goomba(camera)
             self.left_right_trait.update()
             self.check_entity_collision()
         else:

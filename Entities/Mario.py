@@ -56,11 +56,11 @@ class Mario(EntityBase):
         self.dashboard:Dashboard = dashboard
         self.restart = False
 
-    def update(self):
+    def update(self, draw:bool):
         if self.invincibility_frames > 0:
             self.invincibility_frames -= 1
 
-        self.update_traits()
+        self.update_traits(draw)
         self.move_mario()
         self.camera.move()
         self.apply_gravity()

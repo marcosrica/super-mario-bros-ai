@@ -30,27 +30,29 @@ class Koopa(EntityBase):
         self.entity_collider:EntityCollider = EntityCollider(self)
         self.level_obj:Level = level
 
-    def update(self, camera:Camera):
+    def update(self, draw:bool, camera:Camera):
         if self.alive and self.active:
-            self.update_alive(camera)
+            self.update_alive(draw, camera)
             self.check_entity_collision()
         elif self.alive and not self.active and not self.bouncing:
-            self.sleeping_in_shell(camera)
+            self.sleeping_in_shell(draw, camera)
             self.check_entity_collision()
         elif self.bouncing:
-            self.shell_bouncing(camera)
+            self.shell_bouncing(draw, camera)
 
-    def update_alive(self, camera:Camera):
+    def update_alive(self, draw:bool, camera:Camera):
         self.apply_gravity()
-        self.draw_koopa(camera)
+        if draw:
+            self.draw_koopa(camera)
         self.animation.update()
         self.left_right_trait.update()
 
-    def shell_bouncing(self, camera:Camera):
+    def shell_bouncing(self, draw:bool, camera:Camera):
         self.left_right_trait.speed = 4
         self.apply_gravity()
         self.animation.image = self.sprite_collection.get("koopa-hiding").image
-        self.draw_koopa(camera)
+        if draw:
+            self.draw_koopa(camera)
         self.left_right_trait.update()
 
     def draw_koopa(self, camera:Camera):
@@ -64,12 +66,13 @@ class Koopa(EntityBase):
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
 
-    def sleeping_in_shell(self, camera):
+    def sleeping_in_shell(self, draw:bool, camera:Camera):
         if self.timer < self.time_after_death:
-            self.screen.blit(
-                self.sprite_collection.get("koopa-hiding").image,
-                (self.rect.x + camera.x, self.rect.y - 32)
-            )
+            if draw:
+                self.screen.blit(
+                    self.sprite_collection.get("koopa-hiding").image,
+                    (self.rect.x + camera.x, self.rect.y - 32)
+                )
         else:
             self.active = True
             self.alive = True

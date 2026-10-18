@@ -15,7 +15,7 @@ from Entities.CoinBox import CoinBox
 from Entities.RandomBox import RandomBox
 
 class Level:
-    def __init__(self, screen, dashboard):
+    def __init__(self, screen, dashboard, draw:bool):
         self.sprites = Sprites()
         self.dashboard = dashboard
         self.screen = screen
@@ -26,6 +26,8 @@ class Level:
         self.points = 0
         self.coins = 0
 
+        self.to_draw = draw
+
     def load_level(self, level_name):
         with open(f"./levels/{level_name}.json") as jsonData:
             data = json.load(jsonData)
@@ -35,8 +37,8 @@ class Level:
             self.level_length = data["length"]
 
     def load_entities(self, data):
-        print(data)
-        try:
+            print(data)
+        #try:
             [self.add_coin_box(x, y) for x, y in data["level"]["entities"]["CoinBox"]]
             print("coin boxes added")
             [self.add_goomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]
@@ -49,10 +51,10 @@ class Level:
             print("coin bricks added")
             [self.add_random_box(x, y, item) for x, y, item in data["level"]["entities"]["RandomBox"]]
             print("random boxes added")
-        except Exception:
-            print("except called")
-            # if no entities in Level
-            pass
+        #except Exception:
+        #    print("except called")
+        #    # if no entities in Level
+        #    pass
 
     def load_layers(self, data):
             layers = []
@@ -88,10 +90,17 @@ class Level:
                     pygame.Rect(x * 32, y * 32, 32, 32),
                 )
 
-    def update_entities(self, camera: Camera):
+    def update_entities(self, draw:bool, camera: Camera):
         for entity in list(self.entity_list):   # iterate over a copy
-            entity.update(camera)
+            entity.update(draw, camera)
         self.entity_list = [e for e in self.entity_list if e.alive is not None]
+
+    def update(self, visual, camera:Camera):
+        if visual:
+            self.draw_level(camera)
+
+        self.update_entities(visual, camera)
+        
 
     def draw_level(self, camera:Camera):
         try:
@@ -109,9 +118,6 @@ class Level:
                         )
         except IndexError:
             return
-
-        
-        self.update_entities(camera)
         
     def add_cloud_sprite(self, x, y):
         try:
@@ -164,7 +170,8 @@ class Level:
                 self.sprites.spriteCollection,
                 x,
                 y,
-                self.dashboard
+                self.dashboard,
+                self.to_draw
             )
         )
 
@@ -190,7 +197,8 @@ class Level:
                 self.sprites.spriteCollection,
                 x,
                 y,
-                self.dashboard
+                self.dashboard,
+                self.to_draw
             )
         )
 

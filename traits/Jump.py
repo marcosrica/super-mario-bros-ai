@@ -23,5 +23,5 @@ class JumpTrait:
     def reset(self):
         self.entity.inAir = False
 
-    def update(self):
+    def update(self, draw):
         pass

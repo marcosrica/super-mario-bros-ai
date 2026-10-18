@@ -24,10 +24,10 @@ class EntityBase(object):
         if self.obey_gravity:
             self.vel.y += self.gravity
 
-    def update_traits(self):
+    def update_traits(self, draw:bool):
         for trait in self.traits.values():
             #try:
-            trait.update()
+            trait.update(draw)
             #except AttributeError:
             #    pass
 
