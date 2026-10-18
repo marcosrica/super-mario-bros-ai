@@ -15,7 +15,8 @@ def main():
                 print_help()
 
             case "genetic":
-                main_genetics().main()
+                main_genetics()
+                
     except IndexError:
         print("Error running the code. Expected one argument. Printing help...")
         print()
