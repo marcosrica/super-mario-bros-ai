@@ -1,46 +1,33 @@
-import random
-
-import pygame
-from classes.Dashboard import Dashboard
-from classes.Level import Level
-from Entities.Mario import Mario
-
-
-windowSize = 640, 480
-
+from genetics.main import main as main_genetics
+import sys
 
 def main():
-    draw = True
-    
-    pygame.mixer.pre_init(44100, -16, 2, 4096)
-    pygame.init()
-    screen = pygame.display.set_mode(windowSize)
-    max_frame_rate = 60
-    dashboard = Dashboard("./img/font.png", 8, screen, draw)
-    level = Level(screen, dashboard, draw)
-    level.load_level("level1-1")
+    try:
+        argument = sys.argv[1]
+        match argument:
+            case "help":
+                print_help()
 
-    #while not menu.start:
-    #    menu.update()
+            case "--help":
+                print_help()
 
-    mario1 = Mario(0, 0, level, screen, dashboard)
-    clock = pygame.time.Clock()
-    options = [0, 1, 2, 3, 4]
+            case "-help":
+                print_help()
 
-    while not mario1.restart:
-        #pygame.display.set_caption("Super Mario running with {:d} FPS".format(int(clock.get_fps())))
-        
-        mario1.move(random.choice(options))
-        level.update(draw, mario1.camera)
-        dashboard.update(draw, level.coins, level.points, 100)
-        mario1.update(draw)
-        print("Mario is on position: ", mario1.get_pos())
-        pygame.display.update()
-        clock.tick(max_frame_rate)
-    return 'restart'
+            case "genetic":
+                main_genetics().main()
+    except IndexError:
+        print("Error running the code. Expected one argument. Printing help...")
+        print()
+        print_help()
 
+def print_help():
+    print()
+    print("--- Super Mario Bros AI ---")
+    print("A stripped-down rebuild of the original Super Mario Bros game, taylor-made to train AI algorithms with it")
+    print()
+    print("Possible parameters allowed:")
+    print("> genetic: include this parameter to run the simulation using the genetic algorithm included")
+    print("> help: prints this text again, with all the information on how to run the program")
 
-if __name__ == "__main__":
-    exitmessage = 'restart'
-    while exitmessage == 'restart':
-        exitmessage = main()
+main()
