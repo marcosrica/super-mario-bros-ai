@@ -51,7 +51,7 @@ class Wrapper:
             self.dashboard.update(self.to_draw, self.level.coins, self.level.points, 100)
             self.mario.update(self.to_draw)
             self.clock.tick(self.max_frame_rate)
-            self.max_pos = max(self.max_pos, self.mario.get_pos()[0])
+            self.max_pos = max(self.max_pos, self.mario.get_world_x_position())
             
             if self.to_draw:
                 pygame.display.update()

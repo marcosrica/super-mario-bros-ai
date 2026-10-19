@@ -165,3 +165,6 @@ class Mario(EntityBase):
     def set_pos(self, x, y):
         self.rect.x = x
         self.rect.y = y
+
+    def get_world_x_position(self):
+        return self.rect.x

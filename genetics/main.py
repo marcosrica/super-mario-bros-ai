@@ -1,4 +1,5 @@
 from operator import attrgetter
+from statistics import mode
 
 from Entities.Mario import Mario
 from classes.Level import Level
@@ -7,24 +8,39 @@ from genetics.Genes import Genes
 import numpy as np
 
 def main():
+    print()
+    print("--- Entering genetic evolution mode ---")
+    print("Do you want to just train, or do you want to see the game?")
+    j_train = ""
+    while not (j_train == "Y" or j_train=="y" or j_train == "N" or j_train=="n"):
+        j_train = input("> Just train? (Y/n): ")
+
+    if j_train == "Y" or j_train == "y":
+        train(False, 10000)
+    else:
+        train(True, 120)
+
+def train(to_draw:bool, max_frames:int):
     level_name = "./level1-2"
-    draw = True
-    frames = 10000
-    gene_count = 10
-    gene_increment = 10
+    draw = to_draw
+    frames = max_frames
+    gene_count = 50
+    gene_increment = 50
     mutation_chance = 0.1
     
     population_count = 100
     generation_count = 1
     save_every = 5
-    
-    enviroments, models = make_initial_generation(population_count, level_name, draw, frames, gene_count, mutation_chance)
 
     try:
-        models = load_generation("./genetics/save.npy", models)
+        print("Trying to load a previous session...")
+        models, enviroments, gene_count = load_generation(level_name, draw, frames, "./genetics/save.npy", mutation_chance, gene_increment)
         print("Resuming saved generation")
     except Exception:
         print("Could not retrieve any previous generation. Starting from scratch")
+        enviroments, models = make_initial_generation(population_count, level_name, draw, frames, gene_count, mutation_chance)
+
+    last_best = 0
         
     while True:
         #Running a generation
@@ -60,21 +76,27 @@ def main():
         print(f"Maximun score of the generation: {models[0].score}")
         print(f"Minimun score of the generation: {models[len(models)-1].score}")
 
+        #Checking if genes should be expanded
+        pond_max = models[0].score
+        pond_min = models[3 * (population_count // 4)].score
+        print(f"pondered values for diversity: {pond_max}; {pond_min}")
+
+        if pond_max != 0 and not enviroments[0].mario.restart:
+            difference = pond_min / pond_max
+            print(f"Generation similarity: {difference * 100}%")
+            if difference > 0.95:
+                #Genomes have gotten stuck. Expanding
+                print("Generation is stuck. Expanding genome")
+                expand_generation(models, gene_increment)
+                last_best = models[0].score
+
+
         #Combining
-        print(f"Combining the results of generation {generation_count}")
         models = combine(models)
 
         #Checking if we need to save
-        if generation_count % save_every:
-           save_generation("./genetics/save.npy", models) 
-
-        #Checking if genes should be expanded
-        index = int((2 * population_count) / 3)
-        if models[0].score == models[index].score:
-            #Genomes have gotten stuck. Expanding
-            print("Generation is stuck. Expanding genome")
-            expand_generation(models, gene_increment)
-            
+        if generation_count % save_every == 0:
+           save_generation("./genetics/save.npy", models)             
 
         generation_count = generation_count + 1
 
@@ -93,10 +115,10 @@ def make_initial_generation(population, level_name, draw, frames, gene_count, mu
 def evaluate(mario:Mario, level:Level, max_pos:int):
     score = 0
     #Rewarding first for how far it went
-    score += mario.get_pos()[0]
+    score += mario.get_world_x_position() ** 2
 
     #Then penalise individuals who have gotten really far, but then returned
-    difference = max_pos - score
+    difference = max_pos - mario.get_world_x_position()
     score -= (2 * difference)
 
     #Then for the amounts of points scored
@@ -109,7 +131,7 @@ def evaluate(mario:Mario, level:Level, max_pos:int):
     if mario.restart:
         score -= 500
 
-    #Return the composed score
+    #Return the composed score, with a slowed down grap
     return score
 
 def combine(models:list[Genes]):
@@ -128,13 +150,21 @@ def save_generation(route, population: list[Genes]):
     arr = np.stack([m.get_genes() for m in population])
     np.save(route, arr)
 
-def load_generation(route, population: list[Genes]):
-    arr = np.load("./genetics/save.npy")
-    for i in range(len(arr)):
-        for k in range(len(arr[0])):
-            population[i].genome[k] = arr[i][k]
+def load_generation(level_name, draw, frames, route, mut_range, start_mut):
+    arr = np.load(route)
+    pop_count = len(arr)
+    gene_count = len(arr[0])
+    population: list[Genes] = []
+    enviroments: list[Wrapper] = []
+    
+    for i in range(pop_count):
+        population.append(Genes(gene_count, mut_range))
+        population[i].start_mutations = gene_count - start_mut
+        population[i].genome = arr[i]
 
-    return population
+        enviroments.append(Wrapper(level_name, draw, frames))
+
+    return (population, enviroments, gene_count)
 
 def expand_generation(population: list[Genes], expansion):
     for i in range(len(population)):
