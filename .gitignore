@@ -6,3 +6,4 @@ settings.json
 .venv/
 *.DS_Store
 marioEnv
+genetics/save.npy
